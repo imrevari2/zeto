@@ -1,0 +1,120 @@
+openapi: 3.0.3
+info:
+    title: EDF Reader API
+    version: 1.0.0
+
+paths:
+  /files:
+    get:
+      operationId: getFilesList
+      tags:
+        - Edf file reading
+      summary: List all EDF files in the directory with their status
+      responses:
+        '200':
+          description: List of files
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EdfFileSummary'
+
+  /files/content:
+    get:
+      operationId: getFileByName
+      tags:
+        - Edf file reading
+      summary: Get the parsed content of a single EDF file by name
+      parameters:
+        - name: name
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: File content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EdfFileContent'
+        '404':
+          description: File not found
+        '422':
+          description: File is corrupt or unreadable
+
+components:
+  schemas:
+    EdfFileStatus:
+      type: string
+      enum:
+        - VALID
+        - CORRUPT
+        - MISSING_METADATA
+        - INCONSISTENT_HEADER
+
+    EdfFileSummary:
+      type: object
+      required:
+        - fileName
+        - status
+      properties:
+        fileName:
+          type: string
+        status:
+          $ref: '#/components/schemas/EdfFileStatus'
+        recordingDate:
+          type: string
+          format: date-time
+
+    EdfFileContent:
+      type: object
+      required:
+        - fileName
+        - partiallyReadable
+        - recordingDate
+        - numberOfChannels
+        - channels
+        - recordingLengthSeconds
+        - numberOfAnnotations
+      properties:
+        fileName:
+          type: string
+        identifier:
+          type: string
+        partiallyReadable:
+          type: boolean
+        recordingDate:
+          type: string
+          format: date-time
+        patientName:
+          type: string
+        numberOfChannels:
+          type: integer
+          format: int32
+        channels:
+          type: array
+          items:
+            $ref: '#/components/schemas/EdfChannel'
+        recordingLengthSeconds:
+          type: number
+          format: double
+        numberOfAnnotations:
+          type: integer
+          format: int32
+
+    EdfChannel:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+        physicalDimension:
+          type: string
+        samplingFrequency:
+          type: number
+          format: double
