@@ -32,3 +32,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Local EDF test data — not committed
+/edf-files/*
+!/edf-files/.gitkeep

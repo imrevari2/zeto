@@ -44,6 +44,36 @@ paths:
         '422':
           description: File is corrupt or unreadable
 
+  /files/signal:
+    get:
+      operationId: getChannelSignal
+      tags:
+        - Edf file reading
+      summary: Get the sample data of a single channel
+      parameters:
+        - name: name
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: channel
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Channel signal
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EdfChannelSignal'
+        '404':
+          description: File or channel not found
+        '422':
+          description: File is corrupt or unreadable
+
 components:
   schemas:
     EdfFileStatus:
@@ -68,11 +98,35 @@ components:
           type: string
           format: date-time
 
+    EdfChannelSignal:
+      type: object
+      required:
+        - channelIndex
+        - channelName
+        - samplingFrequency
+        - isInternallyInconsistent
+        - samples
+      properties:
+        channelIndex:
+          type: integer
+          format: int32
+        channelName:
+          type: string
+        samplingFrequency:
+          type: number
+          format: double
+        isInternallyInconsistent:
+          type: boolean
+        samples:
+          type: array
+          items:
+            type: number
+            format: double
+
     EdfFileContent:
       type: object
       required:
         - fileName
-        - partiallyReadable
         - recordingDate
         - numberOfChannels
         - channels
@@ -83,8 +137,6 @@ components:
           type: string
         identifier:
           type: string
-        partiallyReadable:
-          type: boolean
         recordingDate:
           type: string
           format: date-time
