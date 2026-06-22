@@ -7,7 +7,7 @@
 export type EdfFileStatus = typeof EdfFileStatus[keyof typeof EdfFileStatus];
 
 
- 
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export const EdfFileStatus = {
   VALID: 'VALID',
   CORRUPT: 'CORRUPT',
@@ -21,10 +21,17 @@ export interface EdfFileSummary {
   recordingDate?: string;
 }
 
+export interface EdfChannelSignal {
+  channelIndex: number;
+  channelName: string;
+  samplingFrequency: number;
+  isInternallyInconsistent: boolean;
+  samples: number[];
+}
+
 export interface EdfFileContent {
   fileName: string;
   identifier?: string;
-  partiallyReadable: boolean;
   recordingDate: string;
   patientName?: string;
   numberOfChannels: number;
@@ -42,5 +49,10 @@ export interface EdfChannel {
 
 export type GetFileByNameParams = {
 name: string;
+};
+
+export type GetChannelSignalParams = {
+name: string;
+channel: number;
 };
 

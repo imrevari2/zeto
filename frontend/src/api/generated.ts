@@ -20,8 +20,10 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  EdfChannelSignal,
   EdfFileContent,
   EdfFileSummary,
+  GetChannelSignalParams,
   GetFileByNameParams
 } from './generated.schemas';
 
@@ -204,6 +206,99 @@ export function useGetFileByName<TData = Awaited<ReturnType<typeof getFileByName
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getGetFileByNameQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * @summary Get the sample data of a single channel
+ */
+export const getChannelSignal = (
+    params: GetChannelSignalParams,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customAxios<EdfChannelSignal>(
+      {url: `/files/signal`, method: 'GET',
+        params, signal
+    },
+      );
+    }
+  
+
+
+
+export const getGetChannelSignalQueryKey = (params?: GetChannelSignalParams,) => {
+    return [
+    `/files/signal`, ...(params ? [params]: [])
+    ] as const;
+    }
+
+    
+export const getGetChannelSignalQueryOptions = <TData = Awaited<ReturnType<typeof getChannelSignal>>, TError = void | void>(params: GetChannelSignalParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getChannelSignal>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetChannelSignalQueryKey(params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getChannelSignal>>> = ({ signal }) => getChannelSignal(params, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getChannelSignal>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetChannelSignalQueryResult = NonNullable<Awaited<ReturnType<typeof getChannelSignal>>>
+export type GetChannelSignalQueryError = void | void
+
+
+export function useGetChannelSignal<TData = Awaited<ReturnType<typeof getChannelSignal>>, TError = void | void>(
+ params: GetChannelSignalParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getChannelSignal>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getChannelSignal>>,
+          TError,
+          Awaited<ReturnType<typeof getChannelSignal>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetChannelSignal<TData = Awaited<ReturnType<typeof getChannelSignal>>, TError = void | void>(
+ params: GetChannelSignalParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getChannelSignal>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getChannelSignal>>,
+          TError,
+          Awaited<ReturnType<typeof getChannelSignal>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetChannelSignal<TData = Awaited<ReturnType<typeof getChannelSignal>>, TError = void | void>(
+ params: GetChannelSignalParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getChannelSignal>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get the sample data of a single channel
+ */
+
+export function useGetChannelSignal<TData = Awaited<ReturnType<typeof getChannelSignal>>, TError = void | void>(
+ params: GetChannelSignalParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getChannelSignal>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetChannelSignalQueryOptions(params,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
