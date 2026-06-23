@@ -1,0 +1,44 @@
+# Design decisions
+
+## General conclusion
+
+When work on this small project started I was not familiar with EDF files yet, did not know how they work and what information they contain. So first of all I had to read about the files, their headers and the data that can be extracted from such a file to start planning my code.
+
+## Assumptions
+
+It was assumed about EDF files that they can fall into one of these 4 categories:
+- **VALID** - a file containing all required data
+- **MISSING METADATA** - a file containing data but some metadata is missing
+- **CORRUPT** - file is totally unreadable
+- **INCONSISTENT HEADER** - the file itself has a corrupt or broken header
+
+However, these were assumptions, and not everything was specified and detailed. Like information regarding missing metadata - what exact metadata should be considered missing, whether an X is actual data or considered missing, and others. Also, it was not specified what should be inconsistent in a header to mark a file so.
+
+To resolve these requirement absences and ambiguities I have drawn certain rules regarding the files:
+- for the **MISSING METADATA** only the missing name was considered as such, and an X was also considered to be missing information.
+- for the **INCONSISTENT HEADER** the rules were taken from the internet, as my lack of expertise in EDF files does not allow me to make those rules myself.
+
+## Decisions
+
+One of the technical decisions I had to make was whether to read all the files and their content and pass it over to frontend, or read all the files and their content and store it in memory, from where it can be provided to frontend upon request. However, due to the fact that the number of files to display is unknown and the files themselves can be quite large, up to several megabytes each, a decision was made to make separate endpoints and give each endpoint very specific roles.
+
+Thus three endpoints were born:
+- **FILES** - to get the file names, their status and date
+- **CONTENT** - reads a particular file and displays its content
+- **CSIGNAL** - from a pre-selected file one signal is read
+
+In this format a particular file can be read up to several times, but the API requests only transport the necessary data.
+
+Another decision while making the list of files was to NOT include pagination and filtering. Usually when such a list is displayed it is customary to add pagination, as the list can contain hundreds of files, and also filtering to filter for particular files only. However this implementation has no such features.
+
+## Simplifications
+
+This project has no security implemented, no accounts and no roles, thus anybody could see the files that may contain sensitive information. In a real life situation, besides the already mentioned pagination and filtering, such a display of personal information would be restricted to doctors or admins only, who possess the necessary credentials.
+It is acceptable for this project as it is for testing purposes only, to demonstrate coding in general.
+
+## Reflection
+
+The weakest part of the application is the file listing itself. In case there are hundreds of files in the folder it would take a long time to read those files and to display them as well.
+If it was production code, first of all I would clarify certain requirements, like what are the exact file types (the 4 categories I have chosen) and what are the exact specifications to put a file into this or that category. Also, it would be great to have a specification that details (possibly with Figma design) how the display of particular files should be working, what data to display and how to display the individual channels.
+And finally in production, pagination and filtering would be added, as well as security.
+In general I can say that I am confident the application is working properly.
