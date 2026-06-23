@@ -9,9 +9,7 @@ interface DetailRowProps {
 
 const DetailRow = ({ label, value, isLoading }: DetailRowProps) => (
   <Box sx={{ display: "contents" }}>
-    <Typography sx={{ fontWeight: 600, color: "text.secondary" }}>
-      {label}
-    </Typography>
+    <Typography sx={{ fontWeight: 600, color: "#0f3d3e" }}>{label}</Typography>
     {isLoading ? <Skeleton /> : <Typography>{value}</Typography>}
   </Box>
 );

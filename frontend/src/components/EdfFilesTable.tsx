@@ -72,7 +72,7 @@ const EdfFilesTable: FC = () => {
           variant="h5"
           sx={{ mb: 2, fontWeight: 600, color: "#0f3d3e" }}
         >
-          EDF fájlok
+          EDF files
         </Typography>
         <TableContainer
           component={Paper}
